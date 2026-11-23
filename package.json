@@ -1,0 +1,62 @@
+{
+  "name": "talise-mcp-sdk",
+  "version": "0.1.0",
+  "description": "Clean-room TypeScript SDK, headless CSV batch CLI, and AI framework adapters for Talise MCP (app.talise.io/mcp) and Agent Pass.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Olu <https://github.com/Olalolo22>",
+  "homepage": "https://github.com/Olalolo22/talise-mcp-sdk",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Olalolo22/talise-mcp-sdk.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Olalolo22/talise-mcp-sdk/issues"
+  },
+  "keywords": [
+    "talise",
+    "sui",
+    "usdsui",
+    "mcp",
+    "agent-pass",
+    "ai-agents",
+    "payments",
+    "stablecoin",
+    "payroll",
+    "sdk"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "bin": {
+    "talise-mcp": "dist/cli.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./adapters": {
+      "types": "./dist/adapters/index.d.ts",
+      "default": "./dist/adapters/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json && chmod +x dist/cli.js",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "cli": "node dist/cli.js",
+    "prepublishOnly": "npm run typecheck && npm run test && npm run build"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "typescript": "^5.7.2",
+    "vitest": "^3.0.5"
+  }
+}

@@ -1,0 +1,8 @@
+node_modules/
+dist/
+coverage/
+runs/
+*.run.json
+.env
+.env.*
+.DS_Store
