@@ -1,8 +1,8 @@
 # talise-mcp-sdk
 
-Clean-room TypeScript SDK, headless CSV batch CLI (`talise-mcp`), and AI framework adapters for [Talise's hosted MCP server](https://www.talise.io/mcp) (`https://app.talise.io/mcp`) and on-chain **Agent Pass** on Sui.
+Independent TypeScript SDK, headless CSV batch CLI (`talise-mcp`), and AI framework adapters built against [Talise's public MCP endpoint](https://www.talise.io/mcp) (`https://app.talise.io/mcp`) and on-chain **Agent Pass** on Sui.
 
-> **Community tool notice:** Built and maintained independently by [Olu (`Olalolo22`)](https://github.com/Olalolo22), not affiliated with or endorsed by Talise Technologies Limited. Written clean-room against the public Streamable HTTP MCP endpoint. Always test with a small Agent Pass daily limit before running production payouts.
+> **Community tool notice:** Built and maintained independently by [Olu (`Olalolo22`)](https://github.com/Olalolo22), not affiliated with or endorsed by Talise Technologies Limited. Written from scratch against the public Streamable HTTP MCP endpoint. Always test with a small Agent Pass daily limit before running production payouts.
 
 ---
 

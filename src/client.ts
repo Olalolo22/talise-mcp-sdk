@@ -156,7 +156,7 @@ export function parseStreamableMcpBody(raw: string, contentType: string): JsonRp
 }
 
 /**
- * Clean-room Streamable HTTP MCP client for Talise (`https://app.talise.io/mcp`).
+ * Independent Streamable HTTP MCP client for Talise's public endpoint (`https://app.talise.io/mcp`).
  * Covers all 16 live tools with typed inputs, validated parameters, and typed
  * `structuredContent` responses.
  */

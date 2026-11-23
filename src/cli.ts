@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * talise-mcp — Clean-room headless CLI & CSV batch runner for Talise MCP + Agent Pass.
+ * talise-mcp — Independent headless CLI & CSV batch runner for Talise's public MCP endpoint.
  *
  * Unofficial community tool built by Olu (Olalolo22), not affiliated with or
  * endorsed by Talise Technologies Limited.
@@ -191,7 +191,7 @@ function emit(flags: Flags, data: unknown, human: () => void): void {
 
 function topHelp(): string {
   return [
-    "talise-mcp — Clean-room CLI & CSV batch runner for Talise MCP + Agent Pass",
+    "talise-mcp — Independent CLI & CSV batch runner for Talise's public MCP endpoint",
     "",
     "Usage:",
     "  talise-mcp <command> [args] [flags]",
@@ -237,26 +237,23 @@ function topHelp(): string {
   ].join("\n");
 }
 
-async function main(): Promise<void> {
-  const argv = process.argv.slice(2);
-  if (
-    argv.length === 0 ||
-    argv[0] === "help" ||
-    argv[0] === "--help" ||
-    argv[0] === "-h"
-  ) {
-    process.stdout.write(topHelp() + "\n");
+const HELP_TOKENS = new Set(["help", "--help", "-h"]);
+const VERSION_TOKENS = new Set(["version", "--version", "-v"]);
+
+async function runCli(rawArgs: string[]): Promise<void> {
+  const [cmd, ...rest] = rawArgs;
+  if (!cmd || HELP_TOKENS.has(cmd)) {
+    process.stdout.write(`${topHelp()}\n`);
     return;
   }
-  if (argv[0] === "--version" || argv[0] === "-v" || argv[0] === "version") {
+  if (VERSION_TOKENS.has(cmd)) {
     process.stdout.write(`talise-mcp ${pkgVersion()}\n`);
     return;
   }
 
-  const cmd = argv[0]!;
-  const flags = parseArgs(argv.slice(1));
+  const flags = parseArgs(rest);
   if (flags.help) {
-    process.stdout.write(topHelp() + "\n");
+    process.stdout.write(`${topHelp()}\n`);
     return;
   }
 
@@ -285,7 +282,7 @@ async function main(): Promise<void> {
     const csv = exportRunToCsv(run);
     if (flags.out) {
       writeFileSync(flags.out, csv, { mode: 0o600 });
-      emit(flags, { ok: true, out: flags.out, rows: run.rows.length }, () => {
+      emit(flags, { status: "ok", out: flags.out, rows: run.rows.length }, () => {
         process.stdout.write(`Exported ${run.rows.length} rows to ${flags.out}\n`);
       });
     } else {
@@ -601,13 +598,20 @@ async function main(): Promise<void> {
   }
 }
 
-main().catch((err: unknown) => {
-  const msg = err instanceof Error ? err.message : String(err);
-  const code = (err as { code?: string })?.code;
-  if (process.argv.includes("--json")) {
-    process.stdout.write(JSON.stringify({ ok: false, error: msg, code }) + "\n");
+function reportFatalError(err: unknown, jsonMode: boolean): never {
+  const message = err instanceof Error ? err.message : String(err);
+  const code =
+    err instanceof Error && "code" in err && typeof (err as { code?: unknown }).code === "string"
+      ? (err as { code: string }).code
+      : undefined;
+  if (jsonMode) {
+    const payload = code ? { status: "error", message, code } : { status: "error", message };
+    process.stdout.write(`${JSON.stringify(payload)}\n`);
   } else {
-    process.stderr.write(`Error: ${msg}\n`);
+    process.stderr.write(`Error: ${message}\n`);
   }
   process.exit(1);
-});
+}
+
+const rawArgs = process.argv.slice(2);
+runCli(rawArgs).catch((err: unknown) => reportFatalError(err, rawArgs.includes("--json")));
